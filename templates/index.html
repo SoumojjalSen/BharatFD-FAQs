@@ -13,6 +13,11 @@
         <button type="submit">Add FAQ</button>
     </form>
 
+    <h2>View FAQs in:</h2>
+    <select id="languageDropdown" onchange="changeLanguage()">
+        <option value="">Select Language</option>
+    </select>
+
     <h2>Existing FAQs</h2>
     <ul>
         {% for faq in faqs %}
@@ -22,5 +27,34 @@
             </li>
         {% endfor %}
     </ul>
+
+    <script>
+        const languages = {
+            "English": "en",
+            "Hindi": "hi",
+            "Bengali": "bn"
+        };
+
+        const dropdown = document.getElementById('languageDropdown');
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedLanguage = urlParams.get('lang');
+
+        for (const [key, value] of Object.entries(languages)) {
+            const option = document.createElement('option');
+            option.value = value;
+            option.textContent = key;
+            if (value === selectedLanguage) {
+                option.selected = true;
+            }
+            dropdown.appendChild(option);
+        }
+
+        function changeLanguage() {
+            const selectedLanguage = dropdown.value;
+            if (selectedLanguage) {
+                window.location.href = `?lang=${selectedLanguage}`;
+            }
+        }
+    </script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import FAQ
 
+
 class FAQSerializer(serializers.ModelSerializer):
     question = serializers.SerializerMethodField()
     answer = serializers.SerializerMethodField()
@@ -11,8 +12,8 @@ class FAQSerializer(serializers.ModelSerializer):
 
     def get_question(self, obj):
         lang = self.context.get('lang', 'en')
-        return getattr(obj, f'question_{lang}', obj.question)
+        return obj.get_translated_text(lang, 'question')
 
     def get_answer(self, obj):
         lang = self.context.get('lang', 'en')
-        return getattr(obj, f'answer_{lang}', obj.answer)
+        return obj.get_translated_text(lang, 'answer')

@@ -11,20 +11,22 @@ def index(request):
             return redirect('home')
     else:
         form = FAQForm()
+    
+    lang = request.GET.get('lang', 'en')
+    
 
-    api_url = reverse('faq-list-create')
+    api_url = reverse('faq-list-create') + f'?lang={lang}'
     response = requests.get(request.build_absolute_uri(api_url))
-    print('Response', response)
-    faqs = response.json()
+
     if response.status_code == 200:
-        faqs = faqs
+        faqs = response.json()
     else:
         faqs = []
             
-
     context = {
         'form': form,
         'faqs': faqs,
+        'lang': lang
     }
     return render(request, 'index.html', context)
 
