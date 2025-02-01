@@ -1,60 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FAQs</title>
-</head>
-<body>
-    <h1>FAQs</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Add FAQ</button>
-    </form>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+  </head>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">BharatFD FAQs<nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Navbar</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Features</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Pricing</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin">Admin</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-    <h2>View FAQs in:</h2>
-    <select id="languageDropdown" onchange="changeLanguage()">
-        <option value="">Select Language</option>
-    </select>
+    <div class="container w-100">
+      <div class="row w-100">
+        <div class="col-md-8 w-100">
+          <h1 class="text-center m-5">FAQs</h1>
+          <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <div class="mb-3 d-flex justify-content-center">
+              {{ form.non_field_errors }}
+              <div class="row d-flex justify-content-center">
+                {% for field in form %}
+                <div class="col-md-6 mb-3 d-flex justify-content-center">
+                  <div
+                    class="input-group align-items-stretch w-100 justify-content-center"
+                  >
+                    <div class="input-group-prepend w-75">
+                      <span
+                        class="input-group-text d-flex align-items-center h-100 rounded-0 justify-content-center"
+                      >
+                        {{ field.label }}
+                      </span>
+                    </div>
+                    <div class="text-area w-100 d-flex justify-content-center">
+                      {{ field }}
+                    </div>
+                  </div>
+                  <div class="invalid-feedback">{{ field.errors }}</div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="d-flex justify-content-center">
+              <button type="submit" class="btn btn-primary m-3">Add FAQ</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 
-    <h2>Existing FAQs</h2>
-    <ul>
-        {% for faq in faqs %}
-            <li>
-                <strong>Question:</strong> {{ faq.question }}<br>
+    <div class="d-flex justify-content-center mb-5">
+      <div class="dropdown">
+        <button
+          class="btn btn-secondary dropdown-toggle"
+          type="button"
+          id="languageDropdown"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          {% if selected_language %} {{ selected_language }} {% else %} Select
+          Language {% endif %}
+        </button>
+        <ul class="dropdown-menu">
+          {% for name, code in languages.items %}
+          <li>
+            <a class="dropdown-item" href="?lang={{ code }}">{{ name }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="container mb-5">
+      {% if faqs|length != 0 %}
+      <div class="d-flex justify-content-center">
+        <h2>Existing FAQs</h2>
+      </div>
+      <div class="d-flex justify-content-center">
+        <div class="accordion" id="accordionExample" style="width: 95%">
+          {% for faq in faqs %}
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+              <button
+                class="accordion-button"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapse{{ forloop.counter }}"
+                aria-expanded="true"
+                aria-controls="collapse{{ forloop.counter }}"
+              >
+                Question: {{ faq.question }}
+              </button>
+            </h2>
+            <div
+              id="collapse{{ forloop.counter }}"
+              class="accordion-collapse collapse {% if forloop.first %}show{% endif %}"
+              aria-labelledby="heading{{ forloop.counter }}"
+              data-bs-parent="#accordionExample"
+            >
+              <div class="accordion-body">
                 <strong>Answer:</strong> {{ faq.answer|safe }}
-            </li>
-        {% endfor %}
-    </ul>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
 
-    <script>
-        const languages = {
-            "English": "en",
-            "Hindi": "hi",
-            "Bengali": "bn"
-        };
-
-        const dropdown = document.getElementById('languageDropdown');
-        const urlParams = new URLSearchParams(window.location.search);
-        const selectedLanguage = urlParams.get('lang');
-
-        for (const [key, value] of Object.entries(languages)) {
-            const option = document.createElement('option');
-            option.value = value;
-            option.textContent = key;
-            if (value === selectedLanguage) {
-                option.selected = true;
-            }
-            dropdown.appendChild(option);
-        }
-
-        function changeLanguage() {
-            const selectedLanguage = dropdown.value;
-            if (selectedLanguage) {
-                window.location.href = `?lang=${selectedLanguage}`;
-            }
-        }
-    </script>
-</body>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>
