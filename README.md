@@ -1,5 +1,7 @@
 # BharatFD-FAQs
 
+![image](https://github.com/user-attachments/assets/dfcd1b3f-13e2-4368-b29d-21b31757fc22)
+
 ## Overview
 
 BharatFD-FAQs is a Django-based web application for managing frequently asked questions (FAQs). It supports multilingual FAQs and provides an API for creating, retrieving and deleting FAQs.
