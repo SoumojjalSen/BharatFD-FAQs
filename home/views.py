@@ -1,10 +1,25 @@
+"""Views for the home app."""
+import requests
 from django.shortcuts import render, redirect
 from django.urls import reverse
-import requests
+
 from .forms import FAQForm
-from .utils.languages import LANGUAGES 
+from .utils.languages import LANGUAGES
+
 
 def index(request):
+    """
+    Handle the index view.
+
+    This view handles the display of the FAQ form and the list of FAQs.
+    It also handles the form submission for creating new FAQs.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The rendered index page.
+    """
     form = FAQForm(request.POST or None)
 
     if request.method == 'POST' and form.is_valid():
@@ -12,10 +27,12 @@ def index(request):
         return redirect('home')
 
     lang = request.GET.get('lang', 'en')
-    api_url = request.build_absolute_uri(reverse('faq-list-create')) + f'?lang={lang}'
+    api_url = request.build_absolute_uri(
+        reverse('faq-list-create')) + f'?lang={lang}'
 
     try:
-        response = requests.get(api_url)
+        # Add a timeout of 10 seconds
+        response = requests.get(api_url, timeout=10)
         faqs = response.json() if response.status_code == 200 else []
     except requests.RequestException:
         faqs = []
@@ -24,7 +41,7 @@ def index(request):
         'form': form,
         'faqs': faqs,
         'lang': lang,
-        'languages': LANGUAGES 
+        'languages': LANGUAGES
     }
 
     return render(request, 'index.html', context)
